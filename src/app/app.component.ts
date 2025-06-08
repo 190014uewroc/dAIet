@@ -99,11 +99,14 @@ export class AppComponent {
         const targetCost = this.calculateCost(userProfile.wealthLevel);
         const mealTypeConstraints = this.createMealTypeConstraints();
 
-        const constraints = {
+        const constraintsNoCost = {
             ...convertToConstraintsObject(this.ints),
-            cost: targetCost,
             kcal: targetCalories,
             ...mealTypeConstraints
+        };
+        const constraints = {
+            ...constraintsNoCost,
+            cost: targetCost
         };
 
         this.model = {
@@ -119,6 +122,7 @@ export class AppComponent {
             ...this.model,
             opType: "min",
             optimize: "kcal_diff",
+            constraints: constraintsNoCost
         })
     }
 
