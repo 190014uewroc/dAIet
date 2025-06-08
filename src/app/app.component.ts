@@ -127,7 +127,7 @@ export class AppComponent {
     }
 
     getDietPlanByDays(result: any) {
-        const { feasible } = result
+        const { feasible } = result;
         delete result.feasible;
         delete result.result;
         delete result.bounded;
@@ -147,23 +147,30 @@ export class AppComponent {
                 }
             }
         }
-        const days = []
+
+        breakfasts.sort((a: Product, b: Product) => a.kcal - b.kcal);
+        dinners.sort((a: Product, b: Product) => a.kcal - b.kcal);
+        lunches.sort((a: Product, b: Product) => a.kcal - b.kcal);
+
+        const days = [];
         for (let i = 0; i < 7; i++) {
+            const lunch = lunches[i];
+            const dinner = dinners[dinners.length-1 - i];
             days.push({
                 breakfast: breakfasts[i],
-                lunch: lunches[i],
-                dinner: dinners[i],
+                lunch,
+                dinner,
                 total: {
-                    protein: Math.floor(breakfasts[i].protein + lunches[i].protein + dinners[i].protein),
-                    carbs: Math.floor(breakfasts[i].carbs + lunches[i].carbs + dinners[i].carbs),
-                    fat: Math.floor(breakfasts[i].fat + lunches[i].fat + dinners[i].fat),
-                    kcal: Math.floor(breakfasts[i].kcal + lunches[i].kcal + dinners[i].kcal),
-                    cost: Math.floor((breakfasts[i].cost + lunches[i].cost + dinners[i].cost) * 2),
+                    protein: Math.floor(breakfasts[i].protein + lunch.protein + dinner.protein),
+                    carbs: Math.floor(breakfasts[i].carbs + lunch.carbs + dinner.carbs),
+                    fat: Math.floor(breakfasts[i].fat + lunch.fat + dinner.fat),
+                    kcal: Math.floor(breakfasts[i].kcal + lunch.kcal + dinner.kcal),
+                    cost: Math.floor((breakfasts[i].cost + lunch.cost + dinner.cost) * 2),
                 },
-            })
+            });
         }
-        return days;
 
+        return days;
     }
 
     private calculateCalories(userProfile: UserProfile): { equal?: number, max?: number, min?: number } {
