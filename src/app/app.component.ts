@@ -4,7 +4,6 @@ import solver from 'javascript-lp-solver';
 import * as meals_dinner from '../assets/meals_dinner.json';
 import * as meals_breakfast from '../assets/meals_breakfast.json';
 import * as meals_lunch from '../assets/meals_lunch.json';
-import { JsonPipe } from "@angular/common";
 
 interface Product {
     name: string;
@@ -54,15 +53,15 @@ export class AppComponent {
 
     constructor(private fb: FormBuilder) {
         this.userProfileForm = this.fb.group({
-            weight: ['85', Validators.required],
-            height: ['189', Validators.required],
+            weight: ['68', Validators.required],
+            height: ['172', Validators.required],
             age: ['25', Validators.required],
             sex: ['m', Validators.required],
             activityLevel: ['low', Validators.required],
             target: ['loose', Validators.required],
-            wealthLevel: ['elon_musk', Validators.required],
+            wealthLevel: ['student', Validators.required],
             preferences: this.fb.group({
-                meatless: [false],
+                meatless: [true],
                 lactoseFree: [false],
                 glutenFree: [false]
             })
@@ -172,9 +171,11 @@ export class AppComponent {
         const maintenanceCalories = Math.ceil((bmr + activityAdjustment) / 10) * 10;
 
         if (userProfile.target === 'loose') {
-            return { min: (maintenanceCalories - 500) * 7 }; //deficit
+            const min = (maintenanceCalories - 500) * 7;
+            return { min, max: min + 1000}; //deficit
         } else if (userProfile.target === 'gain') {
-            return { min: (maintenanceCalories + 500) * 7 }; //surplus
+            const min = (maintenanceCalories + 500) * 7;
+            return { min: (maintenanceCalories + 500) * 7, max: min + 1000}; //surplus
         } else {
             return { min: maintenanceCalories * 7 }; //maintain
         }
